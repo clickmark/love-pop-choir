@@ -1,0 +1,19 @@
+/*
+Theme Name: love_pop_choir
+Theme URI: https://www.ryanwatson.co.uk/
+Author: https://www.ryanwatson.co.uk/
+Author URI: https://www.ryanwatson.co.uk/
+Description: Custom theme
+Version: 2022
+Text Domain: love_pop_choir
+
+love_pop_choir WordPress Theme © 2022 https://www.ryanwatson.co.uk/
+*/
+
+.menu ul { padding: 20px 20px 40px 20px;  background: #cccccc; }
+.menu ul li { float: left; margin-right: 20px; list-style: none; }
+.menu ul li a { color: #000000; }
+
+img { max-width: 100%; height: auto; }
+
+a, a:hover { color: #000000; }
