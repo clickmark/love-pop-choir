@@ -109,4 +109,4 @@ wp-content/wp-cache-config.php
 
 # track these files
 !wp-content/themes/love-pop-choir/
-!wp-content/plugins/love-pop-choir-functionality/
+!wp-content/plugins/
