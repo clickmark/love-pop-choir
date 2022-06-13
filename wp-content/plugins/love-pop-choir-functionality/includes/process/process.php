@@ -33,7 +33,7 @@ function lovepopchoir_header(){
 
 function lovepopchoir_footer() {
 	
-	free_trial_dates();
+	//free_trial_dates();
     
 }
 
