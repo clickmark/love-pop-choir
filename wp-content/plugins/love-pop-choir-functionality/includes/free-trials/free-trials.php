@@ -5,11 +5,25 @@
 * File contains the functions to handle the free trials and calendar dates
 */
 
+function get_venue_id(){
+	
+	$free_trial_choir = get_field('choir');
+	$free_trial_choir_id = $free_trial_choir->ID;
+	
+	return $free_trial_choir_id;
+}
+
+function get_venue_title(){
+	
+	$free_trial_choir = get_field('choir');
+	$free_trial_choir_title = $free_trial_choir->post_title;
+	
+	return $free_trial_choir_title;
+}
+
 function free_trial_dates(){
 	
-$free_trial_choir = get_field('choir');
-$free_trial_choir_id = $free_trial_choir->ID;
-$free_trial_choir_title = $free_trial_choir->post_title;
+$free_trial_choir_id = get_venue_id();
 	
 $args = array(
 	'posts_per_page'	=> -1,
@@ -23,10 +37,10 @@ $the_query = new WP_Query( $args ); ?>
  
 <?php 
 	
+	$dates_array = array();
+	
 	if ( $the_query->have_posts() ) : 
 	
-		$dates_array = array();
-
 		while ( $the_query->have_posts() ) : $the_query->the_post(); 
 	
 			$session_date = get_field('session_date');
@@ -42,13 +56,20 @@ $the_query = new WP_Query( $args ); ?>
 
 		wp_reset_postdata();
 	
-	endif; ?>
+	endif;
 	
+	return $dates_array;
+	
+	
+}
+
+function free_trial_calendar(){ 
+	
+	$free_trial_choir_title = get_venue_title();
+	$dates_array = free_trial_dates(); 
+	?>
 	<script>
-		
-		console.log(moment().add(12, 'days').format());
-		
-		document.addEventListener('DOMContentLoaded', function() {
+			document.addEventListener('DOMContentLoaded', function() {
 			var calendarEl = document.getElementById('calendar');
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 			  initialView: 'dayGridMonth',
@@ -60,19 +81,37 @@ $the_query = new WP_Query( $args ); ?>
 						end: "<?php echo $date_single; ?>",
 						color: 'brightblue',
 						textColor: 'white',
-						kind: 'party',
-						state: 'hh'
+						kind: 'event'
 					},
 					<?php endforeach; ?>
 				],	
 			});
 			calendar.render();
 		});
-		
 	</script>
 
 	<div id='calendar'></div>
-<?php
+
+	<?php
+
+}
+
+function free_trial_single(){
+	
+	if(free_trial_dates()):
+	
+		free_trial_calendar();
+	
+	else: 
+	
+		?>
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		  No free trial dates available for this choir venue.
+		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		<?php 
+	
+	endif;
 	
 }
 

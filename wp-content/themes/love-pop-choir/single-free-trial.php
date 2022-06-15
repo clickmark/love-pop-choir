@@ -8,6 +8,6 @@
 <br>
 <h5 class="mb-4"><u>Choose a date</u></h5>
 
-<?php free_trial_dates(); ?>
+<?php free_trial_single(); ?>
 
 <?php get_footer(); ?>
