@@ -28,7 +28,8 @@ $free_trial_choir_id = get_venue_id();
 $args = array(
 	'posts_per_page'	=> -1,
     'post_type' => 'session',
-	'post_status' => array( 'pending', 'draft', 'future' , 'publish' ),
+	//'post_status' => array( 'pending', 'draft', 'future' , 'publish' ),
+	'post_status' => array( 'pending', 'draft', 'future' ),
 	'meta_key'		=> 'choir',
 	'meta_value'	=> $free_trial_choir_id,
 );
@@ -63,10 +64,52 @@ $the_query = new WP_Query( $args ); ?>
 	
 }
 
+function free_trial_exception_dates(){
+
+	$free_trial_choir_id = get_venue_id();
+	$free_trial_id = get_the_ID();
+	$exception_dates_array = array();
+	
+	if( have_rows('free_trial_exception_dates', $free_trial_id) ):
+	
+		while( have_rows('free_trial_exception_dates', $free_trial_id) ) : the_row();
+		
+
+			$free_trial_session = get_sub_field('free_trial_exception_date');
+			$free_trial_exception_date = $free_trial_session->post_date;
+			$free_trial_exception_ID = $free_trial_session->ID;
+
+			$session_time = get_field('session_time', $free_trial_exception_ID);
+
+			$exception_date = date_create($free_trial_exception_date);
+			$exception_date_formatted = date_format($exception_date,"Y-m-d");
+			$exception_datetime_formatted = $exception_date_formatted . "T" . $session_time . "+09:00";
+
+			array_push($exception_dates_array, $exception_datetime_formatted);
+
+		endwhile;
+
+	endif;
+
+	return $exception_dates_array;
+
+}
+
+function free_trial_dates_minus_exception_dates(){
+
+	$free_trial_dates = free_trial_dates();
+	$free_trial_exception_dates = free_trial_exception_dates();
+
+	$dates_minus_exception_dates = array_diff($free_trial_dates, $free_trial_exception_dates);
+
+	return $dates_minus_exception_dates;
+
+}
+
 function free_trial_calendar(){ 
 	
 	$free_trial_choir_title = get_venue_title();
-	$dates_array = free_trial_dates(); 
+	$dates_array = free_trial_dates_minus_exception_dates(); 
 	?>
 	<script>
 			document.addEventListener('DOMContentLoaded', function() {
@@ -102,15 +145,14 @@ function free_trial_single(){
 	
 		free_trial_calendar();
 	
-	else: 
+	else: ?>
 	
-		?>
 		<div class="alert alert-danger alert-dismissible fade show" role="alert">
 		  No free trial dates available for this choir venue.
 		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
+
 		<?php 
-	
 	endif;
 	
 }
